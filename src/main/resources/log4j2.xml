@@ -1,0 +1,27 @@
+<Configuration status="info">
+    <Properties>
+        <Property name="log-path">/logs</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="RollingFile" fileName="${log-path}/boot-sentinel.log"
+                     filePattern="${log-path}/boot-sentinel-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <pattern>%d - %c - %L [%t] %-5p %x - %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="102400KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="cn.com.xuxiaowei.boot.sentinel" level="info"/>
+    </Loggers>
+</Configuration>
