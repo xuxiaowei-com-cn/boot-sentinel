@@ -1,6 +1,7 @@
 package cn.com.xuxiaowei.boot.sentinel;
 
 import cn.com.xuxiaowei.boot.sentinel.interceptor.ExecutionTimeInterceptor;
+import cn.com.xuxiaowei.boot.sentinel.utils.StringUtils;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -21,6 +22,11 @@ public class BootSentinelAgent {
 
 	public static void premain(String agentArgs, Instrumentation inst) {
 		logger.info("BootSentinelAgent 已启动");
+
+		String bootSentinelPrintlnArgs = System.getenv("BOOT_SENTINEL_PRINTLN_ARGS");
+		if (Boolean.TRUE.toString().equalsIgnoreCase(bootSentinelPrintlnArgs)) {
+			logger.info("BootSentinelAgent 参数：{}", StringUtils.stringToMap(agentArgs));
+		}
 
 		AgentBuilder.Transformer transformer = (builder, typeDescription, classLoader, javaModule,
 				protectionDomain) -> builder.method(ElementMatchers.any())
