@@ -1,0 +1,42 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: maven:3.6.3-jdk-8
+  variables:
+    MAVEN_OPTS: >-
+      -Dhttps.protocols=TLSv1.2
+      -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+      -Dorg.slf4j.simpleLogger.showDateTime=true
+      -Djava.awt.headless=true
+    MAVEN_CLI_OPTS: >-
+      --batch-mode
+      --errors
+      --fail-at-end
+      --show-version
+      --no-transfer-progress
+      -DinstallAtEnd=true
+      -DdeployAtEnd=true
+  script:
+    - GPG_FILE=`find / -name xuxiaowei_0x30F97859_SECRET`
+    - echo $GPG_FILE
+    - gpg --import $GPG_FILE
+    #- SETTINGS_FILE=`find / -name settings.xml`
+    #- echo $SETTINGS_FILE
+    - SETTINGS_FILE=/usr/share/maven/conf/settings.xml
+    - sed -i "s#</servers>#<server><id>ossrh</id><username>$ossrh_user</username><password>$ossrh_pass</password></server>&#" $SETTINGS_FILE
+    - mvn clean package source:jar javadoc:jar deploy -Pgpg -DskipTests=false
+  artifacts:
+    name: boot-sentinel
+    paths:
+      - target/*.jar
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .m2/repository
+  rules:
+    - changes:
+        - src/**/**
+        - .gitlab-ci.yml
+        - pom.xml
