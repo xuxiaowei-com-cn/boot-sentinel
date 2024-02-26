@@ -20,6 +20,8 @@
         <!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
         <byte-buddy.version>1.14.12</byte-buddy.version>
 
+        <unit.version>0.0.3</unit.version>
+
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
         <log4j.version>2.23.0</log4j.version>
 
@@ -40,6 +42,12 @@
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
             <version>${byte-buddy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.com.xuxiaowei.utils</groupId>
+            <artifactId>unit</artifactId>
+            <version>${unit.version}</version>
         </dependency>
 
         <dependency>
