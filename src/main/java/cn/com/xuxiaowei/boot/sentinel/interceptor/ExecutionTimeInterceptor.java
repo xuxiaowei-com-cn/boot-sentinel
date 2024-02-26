@@ -25,13 +25,13 @@ public class ExecutionTimeInterceptor {
 		// 开始：虚拟机运行时对象
 		Runtime startRuntime = Runtime.getRuntime();
 		// 开始：总内存
-		long totalMemory = startRuntime.totalMemory();
+		long startTotalMemory = startRuntime.totalMemory();
 		// 开始：最大内存
-		long maxMemory = startRuntime.maxMemory();
+		long startMaxMemory = startRuntime.maxMemory();
 		// 开始：空闲内存
 		long startFreeMemory = startRuntime.freeMemory();
 		// 开始：使用内存
-		long startUsedMemory = totalMemory - startFreeMemory;
+		long startUsedMemory = startTotalMemory - startFreeMemory;
 
 		Object result = callable.call();
 
@@ -39,10 +39,14 @@ public class ExecutionTimeInterceptor {
 		long endTime = System.currentTimeMillis();
 		// 结束：虚拟机运行时对象
 		Runtime endRuntime = Runtime.getRuntime();
+		// 结束：总内存
+		long endTotalMemory = endRuntime.totalMemory();
+		// 结束：最大内存
+		long endMaxMemory = endRuntime.maxMemory();
 		// 结束：空闲内存
 		long endFreeMemory = endRuntime.freeMemory();
 		// 结束：使用内存
-		long endUsedMemory = totalMemory - endFreeMemory;
+		long endUsedMemory = endTotalMemory - endFreeMemory;
 
 		Class<?> declaringClass = method.getDeclaringClass();
 		String declaringClassName = declaringClass.getName();
@@ -55,9 +59,9 @@ public class ExecutionTimeInterceptor {
 			parameterTypeNameBuilder.append(parameterType.getTypeName());
 		}
 
-		logger.info("执行耗时: {} ms，开始内存：{}，结束内存: {}，使用内存: {}", (endTime - startTime),
-				DataSize.ofBytes(startUsedMemory).toStringLongUnit(),
-				DataSize.ofBytes(endUsedMemory).toStringLongUnit(),
+		logger.info("执行耗时: {} ms, maxMemory: {}, totalMemory: ↑ {}, freeMemory: ↑ {}", (endTime - startTime),
+				DataSize.ofBytes(startMaxMemory).toStringLongUnit(),
+				DataSize.ofBytes(endTotalMemory - startTotalMemory).toStringLongUnit(),
 				DataSize.ofBytes(endFreeMemory - startFreeMemory).toStringLongUnit());
 
 		return result;
