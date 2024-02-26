@@ -1,5 +1,6 @@
 stages:
   - build
+  - sync
 
 build:
   stage: build
@@ -40,3 +41,8 @@ build:
         - src/**/**
         - .gitlab-ci.yml
         - pom.xml
+
+# 嵌入
+include:
+  # 同步代码
+  - /sync.yml
